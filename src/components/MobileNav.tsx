@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Clock, LayoutDashboard, Timer, List, Users, FolderOpen, FileText, BarChart3, Settings, LogOut, Menu, X } from 'lucide-react';
+import { Clock, LayoutDashboard, Timer, List, Users, FolderOpen, FileText, BarChart3, Settings, LogOut, Menu, X, Sun, Moon } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import { useAuth } from '@/hooks/useAuth';
+import { useTheme } from '@/hooks/useTheme';
 
 const navItems = [
   { title: 'Dashboard', url: '/', icon: LayoutDashboard },
@@ -17,6 +18,7 @@ const navItems = [
 export function MobileNav() {
   const [open, setOpen] = useState(false);
   const { signOut, user } = useAuth();
+  const { theme, toggle } = useTheme();
 
   return (
     <div className="lg:hidden">
@@ -49,7 +51,11 @@ export function MobileNav() {
               </NavLink>
             ))}
           </nav>
-          <div className="border-t p-3">
+          <div className="border-t p-3 space-y-1">
+            <button onClick={toggle} className="sidebar-item sidebar-item-inactive w-full">
+              {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+              <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
+            </button>
             <p className="px-3 py-1 text-xs text-muted-foreground truncate">{user?.email}</p>
             <button onClick={signOut} className="sidebar-item sidebar-item-inactive w-full">
               <LogOut className="h-4 w-4" />

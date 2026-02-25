@@ -1,7 +1,8 @@
-import { Clock, LayoutDashboard, Timer, List, Users, FolderOpen, FileText, BarChart3, Settings, LogOut } from 'lucide-react';
+import { Clock, LayoutDashboard, Timer, List, Users, FolderOpen, FileText, BarChart3, Settings, LogOut, Sun, Moon } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import { useAuth } from '@/hooks/useAuth';
 import { useRunningTimer } from '@/hooks/useRunningTimer';
+import { useTheme } from '@/hooks/useTheme';
 
 const navItems = [
   { title: 'Dashboard', url: '/', icon: LayoutDashboard },
@@ -17,6 +18,7 @@ const navItems = [
 export function AppSidebar() {
   const { signOut, user } = useAuth();
   const { timer } = useRunningTimer();
+  const { theme, toggle } = useTheme();
 
   return (
     <aside className="hidden lg:flex lg:flex-col lg:w-60 bg-sidebar border-r border-sidebar-border">
@@ -45,8 +47,15 @@ export function AppSidebar() {
         ))}
       </nav>
 
-      <div className="border-t border-sidebar-border p-3">
-        <div className="mb-2 px-3 py-1">
+      <div className="border-t border-sidebar-border p-3 space-y-1">
+        <button
+          onClick={toggle}
+          className="sidebar-item sidebar-item-inactive w-full"
+        >
+          {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
+        </button>
+        <div className="mb-1 px-3 py-1">
           <p className="text-xs text-sidebar-foreground truncate">{user?.email}</p>
         </div>
         <button
