@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Clock, LayoutDashboard, Timer, List, Users, FolderOpen, FileText, BarChart3, Settings, LogOut, Menu, X, Sun, Moon } from 'lucide-react';
+import { Hourglass, LayoutDashboard, Timer, List, Users, FolderOpen, FileText, BarChart3, Settings, LogOut, Menu, X, Sun, Moon } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import { useAuth } from '@/hooks/useAuth';
 import { useTheme } from '@/hooks/useTheme';
@@ -25,7 +25,7 @@ export function MobileNav() {
       <div className="flex items-center justify-between border-b bg-card px-4 py-3">
         <div className="flex items-center gap-2">
           <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary">
-            <Clock className="h-3.5 w-3.5 text-primary-foreground" />
+            <Hourglass className="h-3.5 w-3.5 text-primary-foreground" />
           </div>
           <span className="font-bold text-foreground">TimeTracker</span>
         </div>
