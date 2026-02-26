@@ -1,4 +1,4 @@
-import { Clock, LayoutDashboard, Timer, List, Users, FolderOpen, FileText, BarChart3, Settings, LogOut, Sun, Moon } from 'lucide-react';
+import { Hourglass, LayoutDashboard, Timer, List, Users, FolderOpen, FileText, BarChart3, Settings, LogOut, Sun, Moon } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import { useAuth } from '@/hooks/useAuth';
 import { useRunningTimer } from '@/hooks/useRunningTimer';
@@ -24,7 +24,7 @@ export function AppSidebar() {
     <aside className="hidden lg:flex lg:flex-col lg:w-60 bg-sidebar border-r border-sidebar-border">
       <div className="flex items-center gap-2.5 px-5 py-5 border-b border-sidebar-border">
         <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-          <Clock className="h-4 w-4 text-primary-foreground" />
+          <Hourglass className="h-4 w-4 text-primary-foreground" />
         </div>
         <span className="text-base font-bold text-sidebar-accent-foreground">TimeTracker</span>
       </div>
