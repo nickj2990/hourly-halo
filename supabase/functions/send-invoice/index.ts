@@ -1,56 +1,75 @@
-import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-serve(async (req) => {
+function getUserIdFromJWT(authHeader: string): string | null {
+  try {
+    const jwt = authHeader.replace('Bearer ', '');
+    const payload = jwt.split('.')[1];
+    const decoded = JSON.parse(atob(payload));
+    return decoded.sub || null;
+  } catch {
+    return null;
+  }
+}
+
+Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
 
   try {
-    const { invoice_id } = await req.json();
+    const body = await req.json();
+    const invoice_id = body?.invoice_id;
     if (!invoice_id) throw new Error('invoice_id is required');
 
-    // Auth: verify the caller is authenticated
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) throw new Error('Missing authorization header');
 
-    const supabase = createClient(
-      Deno.env.get('SUPABASE_URL')!,
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
+    const userId = getUserIdFromJWT(authHeader);
+    if (!userId) throw new Error('Could not parse user from token');
+
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const resendKey = Deno.env.get('RESEND_API_KEY');
+    if (!resendKey) throw new Error('RESEND_API_KEY is not configured');
+
+    const serviceHeaders = {
+      'apikey': serviceRoleKey,
+      'Authorization': `Bearer ${serviceRoleKey}`,
+      'Content-Type': 'application/json',
+    };
+
+    // Fetch invoice — filtered by user_id so users can only access their own
+    const invRes = await fetch(
+      `${supabaseUrl}/rest/v1/invoices?select=*,clients(name,billing_email)&id=eq.${invoice_id}&user_id=eq.${userId}`,
+      { headers: serviceHeaders }
     );
-
-    // Verify JWT and get user
-    const { data: { user }, error: userError } = await createClient(
-      Deno.env.get('SUPABASE_URL')!,
-      Deno.env.get('SUPABASE_ANON_KEY')!,
-      { global: { headers: { Authorization: authHeader } } }
-    ).auth.getUser();
-    if (userError || !user) throw new Error('Unauthorized');
-
-    // Fetch invoice with client info
-    const { data: invoice, error: invError } = await supabase
-      .from('invoices')
-      .select('*, clients(name, billing_email)')
-      .eq('id', invoice_id)
-      .eq('user_id', user.id)
-      .single();
-    if (invError || !invoice) throw new Error('Invoice not found');
+    const invoices = await invRes.json();
+    if (!invoices?.length) throw new Error('Invoice not found');
+    const invoice = invoices[0];
 
     const billingEmail = invoice.clients?.billing_email;
     if (!billingEmail) throw new Error('Client has no billing email set');
 
+    // Fetch business info from user settings
+    const settingsRes = await fetch(
+      `${supabaseUrl}/rest/v1/user_settings?select=business_name,business_address&user_id=eq.${userId}`,
+      { headers: serviceHeaders }
+    );
+    const settingsArr = await settingsRes.json();
+    const settings = settingsArr?.[0] || {};
+    const businessName = settings.business_name || '';
+    const businessAddress = settings.business_address || '';
+
     // Fetch line items
-    const { data: lineItems } = await supabase
-      .from('invoice_line_items')
-      .select('*')
-      .eq('invoice_id', invoice_id)
-      .order('date');
+    const itemsRes = await fetch(
+      `${supabaseUrl}/rest/v1/invoice_line_items?invoice_id=eq.${invoice_id}&order=date`,
+      { headers: serviceHeaders }
+    );
+    const lineItems = await itemsRes.json() || [];
 
     // Build HTML email
-    const rows = (lineItems || []).map((item: any) => `
+    const rows = lineItems.map((item: any) => `
       <tr>
         <td style="padding:8px;border-bottom:1px solid #eee">${item.date}</td>
         <td style="padding:8px;border-bottom:1px solid #eee">${item.project_name}${item.task_name ? ` — ${item.task_name}` : ''}</td>
@@ -63,11 +82,14 @@ serve(async (req) => {
       ? `<tr><td colspan="4" style="padding:8px;text-align:right;color:#666">Tax (${invoice.tax_rate}%)</td><td style="padding:8px;text-align:right">$${Number(invoice.tax_amount).toFixed(2)}</td></tr>`
       : '';
 
+    const businessBlock = businessName
+      ? `<div style="margin-bottom:16px"><strong style="font-size:16px">${businessName}</strong>${businessAddress ? `<br/><span style="color:#666;white-space:pre-line">${businessAddress}</span>` : ''}</div>`
+      : '';
+
     const html = `
       <div style="font-family:sans-serif;max-width:600px;margin:0 auto;color:#111">
+        ${businessBlock}
         <h2 style="margin-bottom:4px">${invoice.invoice_number}</h2>
-        <p style="color:#666;margin-top:0">from ${user.email}</p>
-
         <table style="width:100%;border-collapse:collapse;margin:24px 0">
           <thead>
             <tr style="background:#f5f5f5">
@@ -92,32 +114,32 @@ serve(async (req) => {
       </div>`;
 
     // Send via Resend
-    const resendKey = Deno.env.get('RESEND_API_KEY');
-    if (!resendKey) throw new Error('RESEND_API_KEY is not configured');
-
     const resendRes = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        from: 'onboarding@resend.dev', // replace with your verified domain sender when ready
+        from: 'onboarding@resend.dev',
         to: billingEmail,
         subject: `Invoice ${invoice.invoice_number} — $${Number(invoice.total).toFixed(2)}`,
         html,
       }),
     });
 
-    if (!resendRes.ok) {
-      const err = await resendRes.text();
-      throw new Error(`Resend error: ${err}`);
-    }
+    const resendBody = await resendRes.json();
+    if (!resendRes.ok) throw new Error(`Resend error: ${JSON.stringify(resendBody)}`);
 
     // Mark invoice as sent
-    await supabase.from('invoices').update({ status: 'sent' }).eq('id', invoice_id);
+    await fetch(`${supabaseUrl}/rest/v1/invoices?id=eq.${invoice_id}`, {
+      method: 'PATCH',
+      headers: serviceHeaders,
+      body: JSON.stringify({ status: 'sent' }),
+    });
 
     return new Response(JSON.stringify({ success: true }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (err: any) {
+    console.error('send-invoice error:', err.message);
     return new Response(JSON.stringify({ error: err.message }), {
       status: 400,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

@@ -33,6 +33,8 @@ export default function Invoices() {
   const [formTaxRate, setFormTaxRate] = useState('0');
   const [previewEntries, setPreviewEntries] = useState<any[]>([]);
   const [generating, setGenerating] = useState(false);
+  const [businessName, setBusinessName] = useState('');
+  const [businessAddress, setBusinessAddress] = useState('');
 
   const fetchInvoices = async () => {
     if (!user) return;
@@ -49,6 +51,10 @@ export default function Invoices() {
     if (!user) return;
     fetchInvoices();
     supabase.from('clients').select('*').eq('user_id', user.id).eq('status', 'active').order('name').then(({ data }) => setClients(data || []));
+    supabase.from('user_settings').select('business_name, business_address').eq('user_id', user.id).single().then(({ data }) => {
+      setBusinessName((data as any)?.business_name || '');
+      setBusinessAddress((data as any)?.business_address || '');
+    });
   }, [user]);
 
   const fetchPreview = async () => {
@@ -160,14 +166,16 @@ export default function Invoices() {
       return;
     }
     setSendingEmail(true);
-    const { data: { session } } = await supabase.auth.getSession();
     const res = await supabase.functions.invoke('send-invoice', {
       body: { invoice_id: invoice.id },
-      headers: { Authorization: `Bearer ${session?.access_token}` },
     });
     setSendingEmail(false);
-    if (res.error || res.data?.error) {
-      toast.error(res.data?.error || 'Failed to send email');
+    if (res.error) {
+      let msg = res.error.message || 'Failed to send email';
+      try { const text = await res.error.context.text(); console.error('invoke error body:', text); const body = JSON.parse(text); msg = body.error || msg; } catch (e) { console.error('parse error:', e); }
+      toast.error(msg);
+    } else if (res.data?.error) {
+      toast.error(res.data.error);
     } else {
       toast.success(`Invoice emailed to ${invoice.clients.billing_email}`);
       fetchInvoices();
@@ -184,15 +192,37 @@ export default function Invoices() {
 
   const exportPDF = (invoice: any, items: any[]) => {
     const doc = new jsPDF();
+
+    // Business info (top left)
+    let y = 14;
+    if (businessName) {
+      doc.setFontSize(14);
+      doc.setFont('helvetica', 'bold');
+      doc.text(businessName, 14, y);
+      y += 7;
+    }
+    if (businessAddress) {
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(100);
+      businessAddress.split('\n').forEach(line => { doc.text(line, 14, y); y += 5; });
+      doc.setTextColor(0);
+    }
+
+    // Invoice number (top right)
     doc.setFontSize(20);
-    doc.text(invoice.invoice_number, 14, 22);
+    doc.setFont('helvetica', 'bold');
+    doc.text(invoice.invoice_number, 196, 14, { align: 'right' });
+
+    y = Math.max(y, 28) + 6;
     doc.setFontSize(10);
-    doc.text(`Client: ${invoice.clients?.name || ''}`, 14, 32);
-    doc.text(`Date: ${format(new Date(invoice.issue_date), 'MMM d, yyyy')}`, 14, 38);
-    doc.text(`Period: ${format(new Date(invoice.period_start), 'MMM d')} – ${format(new Date(invoice.period_end), 'MMM d, yyyy')}`, 14, 44);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Client: ${invoice.clients?.name || ''}`, 14, y); y += 6;
+    doc.text(`Date: ${format(new Date(invoice.issue_date), 'MMM d, yyyy')}`, 14, y); y += 6;
+    doc.text(`Period: ${format(new Date(invoice.period_start), 'MMM d')} – ${format(new Date(invoice.period_end), 'MMM d, yyyy')}`, 14, y); y += 8;
 
     autoTable(doc, {
-      startY: 52,
+      startY: y,
       head: [['Date', 'Project', 'Task', 'Description', 'Hours', 'Rate', 'Amount']],
       body: items.map(item => [
         format(new Date(item.date), 'MM/dd'),

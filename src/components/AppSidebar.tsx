@@ -5,7 +5,7 @@ import { useRunningTimer } from '@/hooks/useRunningTimer';
 import { useTheme } from '@/hooks/useTheme';
 
 const navItems = [
-  { title: 'Dashboard', url: '/', icon: LayoutDashboard },
+  { title: 'Dashboard', url: '/dashboard', icon: LayoutDashboard },
   { title: 'Timer', url: '/timer', icon: Timer },
   { title: 'Time Entries', url: '/time-entries', icon: List },
   { title: 'Clients', url: '/clients', icon: Users },
@@ -34,7 +34,7 @@ export function AppSidebar() {
           <NavLink
             key={item.url}
             to={item.url}
-            end={item.url === '/'}
+            end={item.url === '/dashboard'}
             className="sidebar-item sidebar-item-inactive"
             activeClassName="sidebar-item-active"
           >

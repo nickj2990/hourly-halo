@@ -9,6 +9,7 @@ import { RunningTimerProvider } from "@/hooks/useRunningTimer";
 import { AppLayout } from "@/components/AppLayout";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import Auth from "@/pages/Auth";
+import Landing from "@/pages/Landing";
 import Dashboard from "@/pages/Dashboard";
 import TimerPage from "@/pages/TimerPage";
 import TimeEntries from "@/pages/TimeEntries";
@@ -28,6 +29,13 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   return <RunningTimerProvider><AppLayout><ErrorBoundary>{children}</ErrorBoundary></AppLayout></RunningTimerProvider>;
 }
 
+function RootRoute() {
+  const { user, loading } = useAuth();
+  if (loading) return <div className="flex min-h-screen items-center justify-center"><div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" /></div>;
+  if (user) return <Navigate to="/dashboard" replace />;
+  return <Landing />;
+}
+
 const App = () => (
   <ThemeProvider>
     <QueryClientProvider client={queryClient}>
@@ -37,8 +45,9 @@ const App = () => (
         <BrowserRouter>
           <AuthProvider>
             <Routes>
+              <Route path="/" element={<RootRoute />} />
               <Route path="/auth" element={<Auth />} />
-              <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+              <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
               <Route path="/timer" element={<ProtectedRoute><TimerPage /></ProtectedRoute>} />
               <Route path="/time-entries" element={<ProtectedRoute><TimeEntries /></ProtectedRoute>} />
               <Route path="/clients" element={<ProtectedRoute><Clients /></ProtectedRoute>} />

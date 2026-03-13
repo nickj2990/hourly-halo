@@ -58,7 +58,15 @@ export function RunningTimerProvider({ children }: { children: ReactNode }) {
     if (!user || !timer) return null;
     const endTime = new Date();
     const startTime = new Date(timer.start_time);
-    const durationSeconds = Math.round((endTime.getTime() - startTime.getTime()) / 1000);
+    let durationSeconds = Math.round((endTime.getTime() - startTime.getTime()) / 1000);
+
+    // Apply timer rounding (ceiling)
+    const { data: settings } = await supabase.from('user_settings').select('timer_rounding_minutes').eq('user_id', user.id).single();
+    const roundingMinutes = (settings as any)?.timer_rounding_minutes || 0;
+    if (roundingMinutes > 0) {
+      const roundingSeconds = roundingMinutes * 60;
+      durationSeconds = Math.ceil(durationSeconds / roundingSeconds) * roundingSeconds;
+    }
 
     // Get hourly rate
     const { data: project } = await supabase.from('projects').select('hourly_rate_override, client_id').eq('id', timer.project_id).single();
