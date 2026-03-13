@@ -27,7 +27,7 @@ export function MobileNav() {
           <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary">
             <Hourglass className="h-3.5 w-3.5 text-primary-foreground" />
           </div>
-          <span className="font-bold text-foreground">TimeTracker</span>
+          <span className="font-bold text-foreground">Billable</span>
         </div>
         <button onClick={() => setOpen(!open)} className="text-muted-foreground">
           {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}

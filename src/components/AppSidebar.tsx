@@ -26,7 +26,7 @@ export function AppSidebar() {
         <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
           <Hourglass className="h-4 w-4 text-primary-foreground" />
         </div>
-        <span className="text-base font-bold text-sidebar-accent-foreground">TimeTracker</span>
+        <span className="text-base font-bold text-sidebar-accent-foreground">Billable</span>
       </div>
 
       <nav className="flex-1 px-3 py-4 space-y-1">

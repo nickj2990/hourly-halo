@@ -110,7 +110,7 @@ Deno.serve(async (req) => {
             </tr>
           </tfoot>
         </table>
-        <p style="color:#888;font-size:12px">This invoice was sent via Hourly Halo.</p>
+        <p style="color:#888;font-size:12px">This invoice was sent via Billable.</p>
       </div>`;
 
     // Send via Resend

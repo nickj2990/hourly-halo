@@ -46,7 +46,7 @@ const FEATURES = [
 
 const STEPS = [
   { n: '1', title: 'Track your time', body: 'Hit start when you begin work, stop when you\'re done. The timer logs duration, rate, and project automatically.' },
-  { n: '2', title: 'Generate the invoice', body: 'Select a client, pick a date range, and Hourly Halo compiles every billable entry into a numbered invoice.' },
+  { n: '2', title: 'Generate the invoice', body: 'Select a client, pick a date range, and Billable compiles every billable entry into a numbered invoice.' },
   { n: '3', title: 'Get paid', body: 'Export a PDF or email the invoice directly. Mark it paid when the money lands.' },
 ];
 
@@ -96,7 +96,7 @@ export default function Landing() {
                 <circle cx="12" cy="12" r="9" /><polyline points="12 7 12 12 15 15" />
               </svg>
             </div>
-            <span style={{ fontWeight: 700, fontSize: 18, letterSpacing: '-0.02em', color: '#fff' }}>Hourly Halo</span>
+            <span style={{ fontWeight: 700, fontSize: 18, letterSpacing: '-0.02em', color: '#fff' }}>Billable</span>
           </div>
           <Link to="/auth" style={{ background: 'hsl(234,89%,58%)', color: '#fff', padding: '8px 20px', borderRadius: 8, fontWeight: 600, fontSize: 14, textDecoration: 'none', letterSpacing: '0.01em', transition: 'opacity .15s' }}
             onMouseEnter={e => (e.currentTarget.style.opacity = '.85')}
@@ -128,7 +128,7 @@ export default function Landing() {
           </h1>
 
           <p style={{ fontSize: 18, color: '#94a3b8', maxWidth: 500, lineHeight: 1.7, marginBottom: 44, fontFamily: "'Inter', sans-serif", fontWeight: 400 }}>
-            Hourly Halo is the billing toolkit for freelancers who'd rather spend time on their craft than on spreadsheets.
+            Billable is the billing toolkit for freelancers who'd rather spend time on their craft than on spreadsheets.
           </p>
 
           <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
@@ -244,7 +244,7 @@ export default function Landing() {
                 <circle cx="12" cy="12" r="9" /><polyline points="12 7 12 12 15 15" />
               </svg>
             </div>
-            <span style={{ fontWeight: 700, fontSize: 15, color: '#94a3b8' }}>Hourly Halo</span>
+            <span style={{ fontWeight: 700, fontSize: 15, color: '#94a3b8' }}>Billable</span>
           </div>
           <div style={{ display: 'flex', gap: 24, alignItems: 'center' }}>
             <Link to="/auth" style={{ fontSize: 14, color: '#64748b', textDecoration: 'none', transition: 'color .15s' }}
@@ -254,7 +254,7 @@ export default function Landing() {
               onMouseEnter={e => (e.currentTarget.style.color = '#94a3b8')}
               onMouseLeave={e => (e.currentTarget.style.color = '#64748b')}>Create account</Link>
           </div>
-          <span style={{ fontSize: 13, color: '#334155', fontFamily: "'JetBrains Mono', monospace" }}>© {new Date().getFullYear()} Hourly Halo</span>
+          <span style={{ fontSize: 13, color: '#334155', fontFamily: "'JetBrains Mono', monospace" }}>© {new Date().getFullYear()} Billable</span>
         </footer>
       </div>
 
