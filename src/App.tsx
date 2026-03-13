@@ -8,6 +8,7 @@ import { ThemeProvider } from "@/hooks/useTheme";
 import { RunningTimerProvider } from "@/hooks/useRunningTimer";
 import { AppLayout } from "@/components/AppLayout";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { ActivityPromptDialog } from "@/components/ActivityPromptDialog";
 import Auth from "@/pages/Auth";
 import Landing from "@/pages/Landing";
 import Dashboard from "@/pages/Dashboard";
@@ -26,7 +27,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
   if (loading) return <div className="flex min-h-screen items-center justify-center"><div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" /></div>;
   if (!user) return <Navigate to="/auth" replace />;
-  return <RunningTimerProvider><AppLayout><ErrorBoundary>{children}</ErrorBoundary></AppLayout></RunningTimerProvider>;
+  return <RunningTimerProvider><ActivityPromptDialog /><AppLayout><ErrorBoundary>{children}</ErrorBoundary></AppLayout></RunningTimerProvider>;
 }
 
 function RootRoute() {
