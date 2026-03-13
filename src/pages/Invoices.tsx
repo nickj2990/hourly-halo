@@ -166,8 +166,14 @@ export default function Invoices() {
       return;
     }
     setSendingEmail(true);
+
+    // Generate PDF and encode as base64
+    const { data: items } = await supabase.from('invoice_line_items').select('*').eq('invoice_id', invoice.id).order('date');
+    const doc = buildPDF(invoice, items || []);
+    const pdfBase64 = doc.output('datauristring').split(',')[1];
+
     const res = await supabase.functions.invoke('send-invoice', {
-      body: { invoice_id: invoice.id },
+      body: { invoice_id: invoice.id, pdf_base64: pdfBase64, pdf_filename: `${invoice.invoice_number}.pdf` },
     });
     setSendingEmail(false);
     if (res.error) {
@@ -190,10 +196,9 @@ export default function Invoices() {
     if (selectedInvoice?.id === invoiceId) setSelectedInvoice({ ...selectedInvoice, status });
   };
 
-  const exportPDF = (invoice: any, items: any[]) => {
+  const buildPDF = (invoice: any, items: any[]) => {
     const doc = new jsPDF();
 
-    // Business info (top left)
     let y = 14;
     if (businessName) {
       doc.setFontSize(14);
@@ -209,7 +214,6 @@ export default function Invoices() {
       doc.setTextColor(0);
     }
 
-    // Invoice number (top right)
     doc.setFontSize(20);
     doc.setFont('helvetica', 'bold');
     doc.text(invoice.invoice_number, 196, 14, { align: 'right' });
@@ -243,7 +247,11 @@ export default function Invoices() {
     doc.setFontSize(12);
     doc.text(`Total: $${Number(invoice.total).toFixed(2)}`, 140, finalY + 24);
 
-    doc.save(`${invoice.invoice_number}.pdf`);
+    return doc;
+  };
+
+  const exportPDF = (invoice: any, items: any[]) => {
+    buildPDF(invoice, items).save(`${invoice.invoice_number}.pdf`);
   };
 
   const statusColor = (s: string) => {

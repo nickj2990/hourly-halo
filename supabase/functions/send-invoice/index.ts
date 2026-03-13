@@ -20,6 +20,8 @@ Deno.serve(async (req) => {
   try {
     const body = await req.json();
     const invoice_id = body?.invoice_id;
+    const pdf_base64 = body?.pdf_base64;
+    const pdf_filename = body?.pdf_filename || 'invoice.pdf';
     if (!invoice_id) throw new Error('invoice_id is required');
 
     const authHeader = req.headers.get('Authorization');
@@ -122,6 +124,7 @@ Deno.serve(async (req) => {
         to: billingEmail,
         subject: `Invoice ${invoice.invoice_number} — $${Number(invoice.total).toFixed(2)}`,
         html,
+        ...(pdf_base64 ? { attachments: [{ filename: pdf_filename, content: pdf_base64 }] } : {}),
       }),
     });
 
