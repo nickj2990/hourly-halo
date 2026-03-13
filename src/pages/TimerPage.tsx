@@ -21,11 +21,15 @@ export default function TimerPage() {
   const [taskId, setTaskId] = useState('');
   const [description, setDescription] = useState('');
   const [elapsed, setElapsed] = useState(0);
+  const [loadingClients, setLoadingClients] = useState(true);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     if (!user) return;
-    supabase.from('clients').select('*').eq('user_id', user.id).eq('status', 'active').order('name').then(({ data }) => setClients(data || []));
+    supabase.from('clients').select('*').eq('user_id', user.id).eq('status', 'active').order('name').then(({ data }) => {
+      setClients(data || []);
+      setLoadingClients(false);
+    });
   }, [user]);
 
   useEffect(() => {
@@ -109,6 +113,13 @@ export default function TimerPage() {
             </p>
 
             {!timer ? (
+              loadingClients ? (
+                <div className="space-y-4 text-left">
+                  {[1, 2, 3].map(i => <div key={i} className="h-10 animate-pulse rounded-md bg-muted" />)}
+                </div>
+              ) : clients.length === 0 ? (
+                <p className="py-4 text-sm text-muted-foreground">No clients yet. <a href="/clients" className="underline text-primary">Add a client</a> to start tracking.</p>
+              ) : (
               <div className="space-y-4 text-left">
                 <div className="space-y-2">
                   <Label>Client</Label>
@@ -138,6 +149,7 @@ export default function TimerPage() {
                   <Textarea value={description} onChange={e => setDescription(e.target.value)} placeholder="What are you working on?" rows={2} />
                 </div>
               </div>
+              )
             ) : (
               <div className="space-y-2 text-sm text-muted-foreground">
                 <p>Timer running...</p>

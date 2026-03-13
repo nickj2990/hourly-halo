@@ -7,6 +7,7 @@ import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { ThemeProvider } from "@/hooks/useTheme";
 import { RunningTimerProvider } from "@/hooks/useRunningTimer";
 import { AppLayout } from "@/components/AppLayout";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import Auth from "@/pages/Auth";
 import Dashboard from "@/pages/Dashboard";
 import TimerPage from "@/pages/TimerPage";
@@ -24,7 +25,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
   if (loading) return <div className="flex min-h-screen items-center justify-center"><div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" /></div>;
   if (!user) return <Navigate to="/auth" replace />;
-  return <RunningTimerProvider><AppLayout>{children}</AppLayout></RunningTimerProvider>;
+  return <RunningTimerProvider><AppLayout><ErrorBoundary>{children}</ErrorBoundary></AppLayout></RunningTimerProvider>;
 }
 
 const App = () => (

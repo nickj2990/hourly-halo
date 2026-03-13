@@ -21,11 +21,13 @@ export default function Reports() {
   const [weeklyData, setWeeklyData] = useState<{ week: string; hours: number; revenue: number }[]>([]);
   const [clientBreakdown, setClientBreakdown] = useState<{ name: string; hours: number }[]>([]);
   const [period, setPeriod] = useState('12');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!user) return;
     const weeks = parseInt(period);
     const fetchData = async () => {
+      setLoading(true);
       const startDate = subWeeks(new Date(), weeks);
       const { data: entries } = await supabase
         .from('time_entries')
@@ -55,6 +57,7 @@ export default function Reports() {
 
       setWeeklyData(Array.from(weekMap.entries()).map(([week, data]) => ({ week, hours: Math.round(data.hours * 100) / 100, revenue: Math.round(data.revenue * 100) / 100 })));
       setClientBreakdown(Array.from(clientMap.values()).sort((a, b) => b.hours - a.hours));
+      setLoading(false);
     };
     fetchData();
   }, [user, period]);
@@ -110,6 +113,13 @@ export default function Reports() {
         </div>
       </div>
 
+      {loading ? (
+        <div className="grid gap-6 lg:grid-cols-2">
+          <div className="h-[380px] animate-pulse rounded-xl bg-muted" />
+          <div className="h-[380px] animate-pulse rounded-xl bg-muted" />
+          <div className="lg:col-span-2 h-[280px] animate-pulse rounded-xl bg-muted" />
+        </div>
+      ) : (
       <div className="grid gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader><CardTitle className="text-base">Hours per Week</CardTitle></CardHeader>
@@ -178,6 +188,7 @@ export default function Reports() {
           </CardContent>
         </Card>
       </div>
+      )}
     </div>
   );
 }

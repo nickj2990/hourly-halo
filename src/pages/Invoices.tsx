@@ -24,6 +24,7 @@ export default function Invoices() {
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
   const [selectedInvoice, setSelectedInvoice] = useState<any>(null);
   const [lineItems, setLineItems] = useState<any[]>([]);
+  const [sendingEmail, setSendingEmail] = useState(false);
 
   // Create form
   const [formClientId, setFormClientId] = useState('');
@@ -37,7 +38,7 @@ export default function Invoices() {
     if (!user) return;
     const { data } = await supabase
       .from('invoices')
-      .select('*, clients(name)')
+      .select('*, clients(name, billing_email)')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false });
     setInvoices(data || []);
@@ -151,6 +152,27 @@ export default function Invoices() {
     const { data } = await supabase.from('invoice_line_items').select('*').eq('invoice_id', invoice.id).order('date');
     setLineItems(data || []);
     setDetailDialogOpen(true);
+  };
+
+  const sendInvoiceEmail = async (invoice: any) => {
+    if (!invoice.clients?.billing_email) {
+      toast.error('No billing email set for this client');
+      return;
+    }
+    setSendingEmail(true);
+    const { data: { session } } = await supabase.auth.getSession();
+    const res = await supabase.functions.invoke('send-invoice', {
+      body: { invoice_id: invoice.id },
+      headers: { Authorization: `Bearer ${session?.access_token}` },
+    });
+    setSendingEmail(false);
+    if (res.error || res.data?.error) {
+      toast.error(res.data?.error || 'Failed to send email');
+    } else {
+      toast.success(`Invoice emailed to ${invoice.clients.billing_email}`);
+      fetchInvoices();
+      setSelectedInvoice({ ...invoice, status: 'sent' });
+    }
   };
 
   const updateStatus = async (invoiceId: string, status: string) => {
@@ -332,9 +354,14 @@ export default function Invoices() {
                 <Button size="sm" variant="outline" onClick={() => exportPDF(selectedInvoice, lineItems)}>
                   <Download className="h-3 w-3 mr-1" />Export PDF
                 </Button>
+                {(selectedInvoice.status === 'draft' || selectedInvoice.status === 'sent') && (
+                  <Button size="sm" variant="outline" onClick={() => sendInvoiceEmail(selectedInvoice)} disabled={sendingEmail}>
+                    <Send className="h-3 w-3 mr-1" />{sendingEmail ? 'Sending...' : 'Send Email'}
+                  </Button>
+                )}
                 {selectedInvoice.status === 'draft' && (
                   <Button size="sm" variant="outline" onClick={() => updateStatus(selectedInvoice.id, 'sent')}>
-                    <Send className="h-3 w-3 mr-1" />Mark Sent
+                    Mark Sent
                   </Button>
                 )}
                 {(selectedInvoice.status === 'draft' || selectedInvoice.status === 'sent') && (
