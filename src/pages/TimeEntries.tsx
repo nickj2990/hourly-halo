@@ -211,7 +211,7 @@ export default function TimeEntries() {
             return (
               <div key={date}>
                 <div className="mb-2 flex items-center justify-between">
-                  <h3 className="text-sm font-semibold text-foreground">{format(new Date(date), 'EEEE, MMM d, yyyy')}</h3>
+                  <h3 className="text-sm font-semibold text-foreground">{format(new Date(`${date}T12:00:00`), 'EEEE, MMM d, yyyy')}</h3>
                   <span className="text-sm font-medium text-muted-foreground">{formatDuration(totalSeconds)}</span>
                 </div>
                 <div className="rounded-xl border bg-card overflow-hidden">
