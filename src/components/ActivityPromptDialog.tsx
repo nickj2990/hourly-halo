@@ -8,7 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 
 export function ActivityPromptDialog() {
   const { user } = useAuth();
-  const { timer } = useRunningTimer();
+  const { timer, refreshTimer } = useRunningTimer();
   const [open, setOpen] = useState(false);
   const [description, setDescription] = useState('');
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -42,6 +42,7 @@ export function ActivityPromptDialog() {
   const handleSave = async () => {
     if (!user || !timer) return;
     await supabase.from('running_timer').update({ description: description || null }).eq('user_id', user.id);
+    await refreshTimer();
     setOpen(false);
   };
 
