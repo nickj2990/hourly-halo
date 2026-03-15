@@ -9,7 +9,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Plus, Pencil, Trash2, ChevronDown, ChevronRight } from 'lucide-react';
+import { Plus, Pencil, Trash2, ChevronDown, ChevronRight, FolderOpen } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 
@@ -121,8 +122,21 @@ export default function Projects() {
       {loading ? (
         <div className="space-y-4">{[1,2,3].map(i => <div key={i} className="h-20 animate-pulse rounded-xl bg-muted" />)}</div>
       ) : projects.length === 0 ? (
-        <div className="rounded-xl border bg-card p-12 text-center">
-          <p className="text-muted-foreground">No projects yet. Create a client first, then add a project.</p>
+        <div className="rounded-xl border bg-card p-12 text-center space-y-4">
+          <div className="flex justify-center">
+            <div className="rounded-full bg-muted p-4">
+              <FolderOpen className="h-8 w-8 text-muted-foreground" />
+            </div>
+          </div>
+          <div>
+            <p className="font-medium text-foreground">No projects yet</p>
+            <p className="text-sm text-muted-foreground mt-1">
+              {clients.length === 0
+                ? <>Add a <Link to="/clients" className="text-primary underline">client</Link> first, then create a project.</>
+                : 'Organise your work into projects to track time by client.'}
+            </p>
+          </div>
+          {clients.length > 0 && <Button onClick={openAddProject}><Plus className="mr-2 h-4 w-4" />Add Project</Button>}
         </div>
       ) : (
         <div className="space-y-3">

@@ -276,8 +276,19 @@ export default function Invoices() {
       {loading ? (
         <div className="space-y-3">{[1,2,3].map(i => <div key={i} className="h-16 animate-pulse rounded-xl bg-muted" />)}</div>
       ) : invoices.length === 0 ? (
-        <div className="rounded-xl border bg-card p-12 text-center">
-          <p className="text-muted-foreground">No invoices yet. Track time and create your first invoice.</p>
+        <div className="rounded-xl border bg-card p-12 text-center space-y-4">
+          <div className="flex justify-center">
+            <div className="rounded-full bg-muted p-4">
+              <FileText className="h-8 w-8 text-muted-foreground" />
+            </div>
+          </div>
+          <div>
+            <p className="font-medium text-foreground">No invoices yet</p>
+            <p className="text-sm text-muted-foreground mt-1">Track billable time first, then create an invoice from this page.</p>
+          </div>
+          <Button onClick={() => { setFormClientId(''); setFormStart(''); setFormEnd(''); setFormTaxRate('0'); setPreviewEntries([]); setCreateDialogOpen(true); }}>
+            <Plus className="mr-2 h-4 w-4" />Create Invoice
+          </Button>
         </div>
       ) : (
         <div className="rounded-xl border bg-card overflow-hidden">

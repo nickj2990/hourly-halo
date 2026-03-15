@@ -5,7 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import { Download } from 'lucide-react';
+import { Download, BarChart2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { format, subWeeks, startOfWeek, endOfWeek } from 'date-fns';
 
 const CHART_COLORS = [
@@ -118,6 +119,19 @@ export default function Reports() {
           <div className="h-[380px] animate-pulse rounded-xl bg-muted" />
           <div className="h-[380px] animate-pulse rounded-xl bg-muted" />
           <div className="lg:col-span-2 h-[280px] animate-pulse rounded-xl bg-muted" />
+        </div>
+      ) : weeklyData.length === 0 && clientBreakdown.length === 0 ? (
+        <div className="rounded-xl border bg-card p-12 text-center space-y-4">
+          <div className="flex justify-center">
+            <div className="rounded-full bg-muted p-4">
+              <BarChart2 className="h-8 w-8 text-muted-foreground" />
+            </div>
+          </div>
+          <div>
+            <p className="font-medium text-foreground">No data yet</p>
+            <p className="text-sm text-muted-foreground mt-1">Track some billable time and your reports will appear here.</p>
+          </div>
+          <Link to="/timer"><Button>Go to Timer</Button></Link>
         </div>
       ) : (
       <div className="grid gap-6 lg:grid-cols-2">

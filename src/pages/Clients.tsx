@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Plus, Pencil, Archive, RotateCcw, DollarSign, FolderOpen, Clock } from 'lucide-react';
+import { Plus, Pencil, Archive, RotateCcw, DollarSign, FolderOpen, Users } from 'lucide-react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 
@@ -99,8 +99,23 @@ export default function Clients() {
       {loading ? (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">{[1,2,3].map(i => <div key={i} className="h-40 animate-pulse rounded-xl bg-muted" />)}</div>
       ) : visibleClients.length === 0 ? (
-        <div className="rounded-xl border bg-card p-12 text-center">
-          <p className="text-muted-foreground">{showArchived ? 'No archived clients.' : 'No clients yet. Add your first client to get started.'}</p>
+        <div className="rounded-xl border bg-card p-12 text-center space-y-4">
+          <div className="flex justify-center">
+            <div className="rounded-full bg-muted p-4">
+              <Users className="h-8 w-8 text-muted-foreground" />
+            </div>
+          </div>
+          {showArchived ? (
+            <p className="text-muted-foreground">No archived clients.</p>
+          ) : (
+            <>
+              <div>
+                <p className="font-medium text-foreground">No clients yet</p>
+                <p className="text-sm text-muted-foreground mt-1">Add your first client to start tracking billable time.</p>
+              </div>
+              <Button onClick={openAdd}><Plus className="mr-2 h-4 w-4" />Add Client</Button>
+            </>
+          )}
         </div>
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">

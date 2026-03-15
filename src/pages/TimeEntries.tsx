@@ -9,7 +9,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Plus, Search, Pencil, Trash2 } from 'lucide-react';
+import { Plus, Search, Pencil, Trash2, Clock } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 
@@ -201,8 +202,20 @@ export default function TimeEntries() {
       {loading ? (
         <div className="space-y-4">{[1,2,3].map(i => <div key={i} className="h-16 animate-pulse rounded-lg bg-muted" />)}</div>
       ) : entries.length === 0 ? (
-        <div className="rounded-xl border bg-card p-12 text-center">
-          <p className="text-muted-foreground">No time entries yet. Start tracking or add a manual entry.</p>
+        <div className="rounded-xl border bg-card p-12 text-center space-y-4">
+          <div className="flex justify-center">
+            <div className="rounded-full bg-muted p-4">
+              <Clock className="h-8 w-8 text-muted-foreground" />
+            </div>
+          </div>
+          <div>
+            <p className="font-medium text-foreground">No time entries yet</p>
+            <p className="text-sm text-muted-foreground mt-1">Start the timer or add a manual entry to begin tracking.</p>
+          </div>
+          <div className="flex gap-2 justify-center">
+            <Link to="/timer"><Button>Go to Timer</Button></Link>
+            <Button variant="outline" onClick={openAdd}><Plus className="mr-2 h-4 w-4" />Add Manually</Button>
+          </div>
         </div>
       ) : (
         <div className="space-y-6">
