@@ -89,32 +89,64 @@ export default function Landing() {
       <div style={{ position: 'relative', zIndex: 1 }}>
 
         {/* NAV */}
-        <nav style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '24px 40px', borderBottom: '1px solid rgba(99,102,241,.15)', backdropFilter: 'blur(12px)', position: 'sticky', top: 0, zIndex: 50, background: 'rgba(8,12,20,.8)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <div style={{ width: 32, height: 32, borderRadius: 8, background: 'hsl(234,89%,58%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" width="16" height="16">
-                <circle cx="12" cy="12" r="9" /><polyline points="12 7 12 12 15 15" />
-              </svg>
+        <nav style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 40px', height: 64, backdropFilter: 'blur(16px)', position: 'sticky', top: 0, zIndex: 50, background: 'rgba(8,12,20,.75)' }}>
+          {/* Animated bottom border */}
+          <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 1, background: 'linear-gradient(90deg, transparent 0%, rgba(99,102,241,.4) 30%, rgba(139,92,246,.4) 70%, transparent 100%)' }} />
+
+          {/* Logo */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, userSelect: 'none' }}>
+            {/* Mark: two overlapping arcs suggesting a clock face + B */}
+            <svg viewBox="0 0 36 36" width="36" height="36" fill="none">
+              <rect width="36" height="36" rx="10" fill="url(#navGrad)" />
+              <circle cx="18" cy="18" r="9" stroke="rgba(255,255,255,.25)" strokeWidth="1" />
+              {/* Clock hands */}
+              <line x1="18" y1="18" x2="18" y2="11" stroke="white" strokeWidth="2" strokeLinecap="round" />
+              <line x1="18" y1="18" x2="22" y2="21" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
+              {/* Center dot */}
+              <circle cx="18" cy="18" r="1.5" fill="white" />
+              <defs>
+                <linearGradient id="navGrad" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stopColor="hsl(234,89%,62%)" />
+                  <stop offset="100%" stopColor="hsl(258,80%,58%)" />
+                </linearGradient>
+              </defs>
+            </svg>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 0, lineHeight: 1 }}>
+              <span style={{ fontWeight: 800, fontSize: 17, letterSpacing: '-0.03em', color: '#fff' }}>Billable</span>
+              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: 'rgba(99,102,241,.7)', letterSpacing: '0.12em', textTransform: 'uppercase' }}>time · invoice</span>
             </div>
-            <span style={{ fontWeight: 700, fontSize: 18, letterSpacing: '-0.02em', color: '#fff' }}>Billable</span>
           </div>
-          <Link to="/auth" style={{ background: 'hsl(234,89%,58%)', color: '#fff', padding: '8px 20px', borderRadius: 8, fontWeight: 600, fontSize: 14, textDecoration: 'none', letterSpacing: '0.01em', transition: 'opacity .15s' }}
-            onMouseEnter={e => (e.currentTarget.style.opacity = '.85')}
-            onMouseLeave={e => (e.currentTarget.style.opacity = '1')}>
-            Sign in →
+
+          {/* Center: live session pill */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(99,102,241,.08)', border: '1px solid rgba(99,102,241,.18)', borderRadius: 100, padding: '5px 14px' }}>
+            <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#6366f1', display: 'inline-block', animation: 'pulse 2s infinite', flexShrink: 0 }} />
+            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#818cf8', letterSpacing: '0.06em' }}>
+              <TickingClock />
+            </span>
+          </div>
+
+          {/* Sign in — outlined with sweep fill */}
+          <Link to="/auth"
+            style={{ position: 'relative', overflow: 'hidden', color: '#e2e8f0', padding: '8px 22px', borderRadius: 9, fontWeight: 600, fontSize: 14, textDecoration: 'none', letterSpacing: '-0.01em', border: '1px solid rgba(99,102,241,.4)', background: 'transparent', transition: 'color .2s, border-color .2s', display: 'inline-flex', alignItems: 'center', gap: 7 }}
+            onMouseEnter={e => {
+              (e.currentTarget as HTMLElement).style.borderColor = 'rgba(99,102,241,.8)';
+              (e.currentTarget as HTMLElement).style.background = 'rgba(99,102,241,.15)';
+              (e.currentTarget as HTMLElement).style.color = '#fff';
+            }}
+            onMouseLeave={e => {
+              (e.currentTarget as HTMLElement).style.borderColor = 'rgba(99,102,241,.4)';
+              (e.currentTarget as HTMLElement).style.background = 'transparent';
+              (e.currentTarget as HTMLElement).style.color = '#e2e8f0';
+            }}>
+            Sign in
+            <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 8h10M9 4l4 4-4 4" />
+            </svg>
           </Link>
         </nav>
 
         {/* HERO */}
         <section style={{ minHeight: '92vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '80px 40px 60px', maxWidth: 1100, margin: '0 auto', position: 'relative' }}>
-
-          {/* Live timer badge */}
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(99,102,241,.12)', border: '1px solid rgba(99,102,241,.25)', borderRadius: 100, padding: '6px 14px', marginBottom: 36, width: 'fit-content' }}>
-            <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#6366f1', display: 'inline-block', animation: 'pulse 2s infinite' }} />
-            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#818cf8', letterSpacing: '0.05em' }}>
-              <TickingClock />
-            </span>
-          </div>
 
           <h1 style={{ fontSize: 'clamp(44px, 7vw, 88px)', fontWeight: 800, lineHeight: 1.0, letterSpacing: '-0.04em', marginBottom: 28, maxWidth: 800, color: '#fff' }}>
             Your time<br />
