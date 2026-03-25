@@ -163,7 +163,7 @@ export default function Landing() {
           <div style={{ display: 'flex', gap: 16, marginTop: 64, flexWrap: 'wrap' }}>
             {[['∞', 'Clients'], ['∞', 'Projects'], ['PDF', 'Export'], ['0%', 'Commission']].map(([val, label]) => (
               <div key={label} style={{ background: 'rgba(255,255,255,.04)', border: '1px solid rgba(255,255,255,.08)', borderRadius: 10, padding: '12px 20px', display: 'flex', flexDirection: 'column', gap: 2 }}>
-                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: val === '∞' ? 28 : 20, fontWeight: 600, color: '#818cf8', lineHeight: 1 }}>{val}</span>
+                <span style={{ fontFamily: val === '∞' ? "'Syne', sans-serif" : "'JetBrains Mono', monospace", fontSize: 20, fontWeight: 600, color: '#818cf8', lineHeight: 1 }}>{val}</span>
                 <span style={{ fontSize: 12, color: '#64748b', fontFamily: "'Inter', sans-serif" }}>{label}</span>
               </div>
             ))}
