@@ -93,36 +93,11 @@ export default function Landing() {
           {/* Animated bottom border */}
           <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 1, background: 'linear-gradient(90deg, transparent 0%, rgba(99,102,241,.4) 30%, rgba(139,92,246,.4) 70%, transparent 100%)' }} />
 
-          {/* Logo */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, userSelect: 'none' }}>
-            {/* Mark: two overlapping arcs suggesting a clock face + B */}
-            <svg viewBox="0 0 36 36" width="36" height="36" fill="none">
-              <rect width="36" height="36" rx="10" fill="url(#navGrad)" />
-              <circle cx="18" cy="18" r="9" stroke="rgba(255,255,255,.25)" strokeWidth="1" />
-              {/* Clock hands */}
-              <line x1="18" y1="18" x2="18" y2="11" stroke="white" strokeWidth="2" strokeLinecap="round" />
-              <line x1="18" y1="18" x2="22" y2="21" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
-              {/* Center dot */}
-              <circle cx="18" cy="18" r="1.5" fill="white" />
-              <defs>
-                <linearGradient id="navGrad" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
-                  <stop offset="0%" stopColor="hsl(234,89%,62%)" />
-                  <stop offset="100%" stopColor="hsl(258,80%,58%)" />
-                </linearGradient>
-              </defs>
-            </svg>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 0, lineHeight: 1 }}>
-              <span style={{ fontWeight: 800, fontSize: 17, letterSpacing: '-0.03em', color: '#fff' }}>Billable</span>
-              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: 'rgba(99,102,241,.7)', letterSpacing: '0.12em', textTransform: 'uppercase' }}>time · invoice</span>
-            </div>
-          </div>
-
-          {/* Center: live session pill */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(99,102,241,.08)', border: '1px solid rgba(99,102,241,.18)', borderRadius: 100, padding: '5px 14px' }}>
-            <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#6366f1', display: 'inline-block', animation: 'pulse 2s infinite', flexShrink: 0 }} />
-            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#818cf8', letterSpacing: '0.06em' }}>
-              <TickingClock />
-            </span>
+          {/* Logo — typographic wordmark */}
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: 1, userSelect: 'none' }}>
+            <span style={{ fontWeight: 900, fontSize: 20, letterSpacing: '-0.04em', color: '#fff', lineHeight: 1 }}>bill</span>
+            <span style={{ fontWeight: 900, fontSize: 20, letterSpacing: '-0.04em', color: 'hsl(234,89%,68%)', lineHeight: 1 }}>/</span>
+            <span style={{ fontWeight: 900, fontSize: 20, letterSpacing: '-0.04em', color: '#fff', lineHeight: 1 }}>able</span>
           </div>
 
           {/* Sign in — outlined with sweep fill */}
@@ -147,6 +122,14 @@ export default function Landing() {
 
         {/* HERO */}
         <section style={{ minHeight: '92vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '80px 40px 60px', maxWidth: 1100, margin: '0 auto', position: 'relative' }}>
+
+          {/* Live timer badge */}
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(99,102,241,.12)', border: '1px solid rgba(99,102,241,.25)', borderRadius: 100, padding: '6px 14px', marginBottom: 36, width: 'fit-content' }}>
+            <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#6366f1', display: 'inline-block', animation: 'pulse 2s infinite' }} />
+            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#818cf8', letterSpacing: '0.05em' }}>
+              <TickingClock />
+            </span>
+          </div>
 
           <h1 style={{ fontSize: 'clamp(44px, 7vw, 88px)', fontWeight: 800, lineHeight: 1.0, letterSpacing: '-0.04em', marginBottom: 28, maxWidth: 800, color: '#fff' }}>
             Your time<br />

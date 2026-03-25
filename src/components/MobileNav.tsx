@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Hourglass, LayoutDashboard, Timer, List, Users, FolderOpen, FileText, BarChart3, Settings, LogOut, Menu, X, Sun, Moon } from 'lucide-react';
+import { LayoutDashboard, Timer, List, Users, FolderOpen, FileText, BarChart3, Settings, LogOut, Menu, X, Sun, Moon } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import { useAuth } from '@/hooks/useAuth';
 import { useTheme } from '@/hooks/useTheme';
@@ -23,11 +23,10 @@ export function MobileNav() {
   return (
     <div className="lg:hidden">
       <div className="flex items-center justify-between border-b bg-card px-4 py-3">
-        <div className="flex items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary">
-            <Hourglass className="h-3.5 w-3.5 text-primary-foreground" />
-          </div>
-          <span className="font-bold text-foreground">Billable</span>
+        <div className="flex items-baseline gap-0.5 select-none">
+          <span className="text-lg font-black tracking-tighter text-foreground leading-none">bill</span>
+          <span className="text-lg font-black tracking-tighter text-primary leading-none">/</span>
+          <span className="text-lg font-black tracking-tighter text-foreground leading-none">able</span>
         </div>
         <button onClick={() => setOpen(!open)} className="text-muted-foreground">
           {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
