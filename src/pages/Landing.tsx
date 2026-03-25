@@ -253,13 +253,10 @@ export default function Landing() {
 
         {/* FOOTER */}
         <footer style={{ borderTop: '1px solid rgba(255,255,255,.06)', padding: '36px 40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <div style={{ width: 28, height: 28, borderRadius: 7, background: 'hsl(234,89%,58%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" width="14" height="14">
-                <circle cx="12" cy="12" r="9" /><polyline points="12 7 12 12 15 15" />
-              </svg>
-            </div>
-            <span style={{ fontWeight: 700, fontSize: 15, color: '#94a3b8' }}>Billable</span>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: 1, userSelect: 'none' }}>
+            <span style={{ fontWeight: 900, fontSize: 16, letterSpacing: '-0.04em', color: '#94a3b8', lineHeight: 1 }}>bill</span>
+            <span style={{ fontWeight: 900, fontSize: 16, letterSpacing: '-0.04em', color: 'hsl(234,89%,68%)', lineHeight: 1 }}>/</span>
+            <span style={{ fontWeight: 900, fontSize: 16, letterSpacing: '-0.04em', color: '#94a3b8', lineHeight: 1 }}>able</span>
           </div>
           <div style={{ display: 'flex', gap: 24, alignItems: 'center' }}>
             <Link to="/auth" style={{ fontSize: 14, color: '#64748b', textDecoration: 'none', transition: 'color .15s' }}
