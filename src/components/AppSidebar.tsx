@@ -1,4 +1,4 @@
-import { Hourglass, LayoutDashboard, Timer, List, Users, FolderOpen, FileText, BarChart3, Settings, LogOut, Sun, Moon } from 'lucide-react';
+import { LayoutDashboard, Timer, List, Users, FolderOpen, FileText, BarChart3, Settings, LogOut, Sun, Moon } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import { useAuth } from '@/hooks/useAuth';
 import { useRunningTimer } from '@/hooks/useRunningTimer';
@@ -22,11 +22,13 @@ export function AppSidebar() {
 
   return (
     <aside className="hidden lg:flex lg:flex-col lg:w-60 bg-sidebar border-r border-sidebar-border">
-      <div className="flex items-center gap-2.5 px-5 py-5 border-b border-sidebar-border">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-          <Hourglass className="h-4 w-4 text-primary-foreground" />
+      <div className="flex items-center gap-3 px-5 py-5 border-b border-sidebar-border">
+        {/* Wordmark: slash-style typographic mark */}
+        <div className="flex items-baseline gap-0.5 select-none">
+          <span className="text-xl font-black tracking-tighter text-sidebar-accent-foreground leading-none">bill</span>
+          <span className="text-xl font-black tracking-tighter text-primary leading-none">/</span>
+          <span className="text-xl font-black tracking-tighter text-sidebar-accent-foreground leading-none">able</span>
         </div>
-        <span className="text-base font-bold text-sidebar-accent-foreground">Billable</span>
       </div>
 
       <nav className="flex-1 px-3 py-4 space-y-1">
